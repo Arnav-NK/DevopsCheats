@@ -1,0 +1,127 @@
+1️⃣ Basic Docker Commands
+------------------------------------------------------------
+Check version                       : docker --version
+List running containers              : docker ps       (use -a to list all)
+Pull an image                        : docker pull <image>:<tag>
+Run a container                       : docker run -d --name <name> <image>
+Stop a container                       : docker stop <container_id/name>
+Start a container                      : docker start <container_id/name>
+Remove a container                      : docker rm <container_id/name> (-f to force)
+Remove an image                          : docker rmi <image_id/name>
+
+2️⃣ Interactive Terminal
+------------------------------------------------------------
+Run interactively                      : docker run -it <image> /bin/bash
+Attach to running container            : docker exec -it <container> bash
+Detach without stopping                 : Ctrl + p + Ctrl + q
+
+3️⃣ Docker Network
+------------------------------------------------------------
+List networks                           : docker network ls
+Create network                           : docker network create <network_name>
+Inspect network                           : docker network inspect <network_name>
+Connect container to network              : docker network connect <network_name> <container_name>
+Disconnect container                       : docker network disconnect <network_name> <container_name>
+Remove network                              : docker network rm <network_name>
+
+docker-compose.yml Example (Network)
+--------------------------------------
+version: "3.9"
+services:
+  app:
+    image: nginx
+    networks:
+      - my_net
+
+networks:
+  my_net:
+    driver: bridge
+
+4️⃣ Docker Volume
+------------------------------------------------------------
+List volumes                             : docker volume ls
+Create volume                             : docker volume create my_volume
+Inspect volume                             : docker volume inspect my_volume
+Remove volume                              : docker volume rm my_volume
+Run container with volume                  : docker run -d -v my_volume:/data busybox
+
+docker-compose.yml Example (Volume)
+--------------------------------------
+version: "3.9"
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
+5️⃣ Exec into Running Container
+------------------------------------------------------------
+docker exec -it <container> bash       # Open bash shell
+docker exec -it <container> sh         # Open sh shell
+docker exec -it <container> env        # View environment variables
+
+6️⃣ Cleanup (Prune)
+------------------------------------------------------------
+docker system prune                     # Remove stopped containers, unused networks, dangling images
+docker system prune -a                  # Remove all unused images
+docker container prune                  # Remove stopped containers
+docker image prune                       # Remove unused images
+docker volume prune                      # Remove unused volumes
+docker network prune                     # Remove unused networks
+
+7️⃣ Images & RMI
+------------------------------------------------------------
+docker images                           # List images
+docker rmi <image_id>                   # Remove image
+docker rmi -f <image_id>                # Force remove image
+
+8️⃣ Docker Registry
+------------------------------------------------------------
+Run local private registry:
+docker run -d -p 5000:5000 --name registry registry:2
+
+Push to local registry:
+docker tag myimage localhost:5000/myimage
+docker push localhost:5000/myimage
+
+Pull from local registry:
+docker pull localhost:5000/myimage
+
+docker-compose.yml Example (Registry)
+--------------------------------------
+version: "3.9"
+services:
+  registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
+    volumes:
+      - registry_data:/var/lib/registry
+
+volumes:
+  registry_data:
+
+9️⃣ Run Docker in Background with nohup
+------------------------------------------------------------
+nohup docker run -d --name my_app nginx &
+
+🔟 Docker Scout (Security Scanning) // for docker desktop only
+------------------------------------------------------------
+docker scout quickview <image>         # Quick security summary
+docker scout cves <image>              # Detailed CVE list
+docker scout recommendations <image>   # Suggested updates/fixes
+docker scout compare <image1> <image2> # Compare 2 images
+
+ Miscellaneous 
+------------------------------------------------------------
+docker logs <container>                 # View container logs
+docker logs -f <container>              # Follow logs live
+docker cp <container>:/path/to/file .   # Copy file from container to host
+docker stats                             # Real-time container usage
+docker top <container>                   # Running processes in container
+docker inspect <container>               # Full config/details (JSON)
