@@ -1,0 +1,45 @@
+🔹 Jenkins Basics
+-----------------
+# Install Jenkins (Ubuntu)
+sudo apt update && sudo apt install openjdk-11-jdk -y
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
+sudo apt install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+# Access Jenkins
+http://<server_ip>:8080
+
+# Unlock Jenkins
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+🔹 Common Jenkins CLI Commands
+------------------------------
+jenkins-cli.jar -s http://localhost:8080/ list-jobs
+jenkins-cli.jar -s http://localhost:8080/ build <job_name>
+jenkins-cli.jar -s http://localhost:8080/ create-job <job_name> < config.xml
+
+🔹 CI/CD Pipeline Example (Declarative)
+---------------------------------------
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        sh 'echo "Building..."'
+      }
+    }
+    stage('Test') {
+      steps {
+        sh 'echo "Running tests..."'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh 'echo "Deploying..."'
+      }
+    }
+  }
+}
